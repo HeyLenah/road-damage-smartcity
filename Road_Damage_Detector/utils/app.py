@@ -153,26 +153,33 @@ if "page" not in st.session_state:
     st.session_state.page = "Home"
 
 def send_image_to_api(image_path):
-    with open(image_path, "rb") as image_file:
-        files = {"file": image_file}
-        response = requests.post(SERVICE_URL, files=files)
+    try:
+        with open(image_path, "rb") as image_file:
+            files = {"file": image_file}
+            response = requests.post(SERVICE_URL, files=files)
 
-    if response.status_code == 200:
-        response_json = response.json()
-        pothole_detected = response_json.get("pothole_detected", False)
-        num_potholes = response_json.get("num_potholes", 0)
-        img_str = response_json.get("image", None)
+        if response.status_code == 200:
+            response_json = response.json()
+            pothole_detected = response_json.get("pothole_detected", False)
+            num_potholes = response_json.get("num_potholes", 0)
+            img_str = response_json.get("image", None)
 
-    # If an image is returned, display it
-    if img_str:
-        image = Image.open(io.BytesIO(base64.b64decode(img_str)))
-        st.image(image, use_container_width=True)
+            if img_str:
+                image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+                st.image(image, use_container_width=True)
+                st.markdown('<p style="color:#eeeeef;">:heavy_check_mark: Processed Image with detection</p>', unsafe_allow_html=True)
+                return pothole_detected, num_potholes
+            else:
+                st.markdown('<p style="color:#eeeeef;">:warning: No image returned</p>', unsafe_allow_html=True)
+                return pothole_detected, num_potholes
 
-        st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<p style="color:#eeeeef;">:x: API Error: {response.status_code}</p>', unsafe_allow_html=True)
+            return None
 
-        return pothole_detected, num_potholes
-    else:
-        st.markdown('<p style="color:#eeeeef;">❌ Failed to get prediction from API.</p>', unsafe_allow_html=True)
+    except requests.exceptions.RequestException as e:
+        st.markdown('<p style="color:#eeeeef;">:x: Failed to connect to the API</p>', unsafe_allow_html=True)
+        print("Connection Error:", e)
         return None
 
 
