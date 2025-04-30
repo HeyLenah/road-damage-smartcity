@@ -193,7 +193,12 @@ if page == "Home":
     col1, col2, col3 = st.columns([5, 1, 1])  # col1 is now the widest
 
     with col1:
-        st.image("logo.jpg", width=1000)
+        logo_path = os.path.join(os.path.dirname(__file__), "logo.jpg")
+
+        if os.path.exists(logo_path):
+            st.image(Image.open(logo_path), width=1000)
+        else:
+            st.error(f"Logo not found at: {logo_path}")
         st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("""
 <div dir="rtl" style="text-align: right; font-size: 18px; line-height: 1.6;">
