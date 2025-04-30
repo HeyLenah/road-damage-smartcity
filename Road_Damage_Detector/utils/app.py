@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL = "https://image-thabat-652749443637.europe-west1.run.app"  # Replace with your real API server!
+API_URL = "http://127.0.0.1:8000/predict"  # Replace with your real API server!
 
 # Load and Save functions
 def load_user_db():
@@ -152,43 +152,28 @@ if "username" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-import requests
-import base64
-import io
-from PIL import Image
-import streamlit as st
-
 def send_image_to_api(image_path):
-    # Send the image to the API
     with open(image_path, "rb") as image_file:
         files = {"file": image_file}
         response = requests.post(API_URL, files=files)
 
-    # Initialize img_str in case the response doesn't contain it
-    img_str = None
-
     if response.status_code == 200:
-        # Get the response JSON
         response_json = response.json()
         pothole_detected = response_json.get("pothole_detected", False)
         num_potholes = response_json.get("num_potholes", 0)
         img_str = response_json.get("image", None)
 
-        # If an image is returned, decode and display it
-        if img_str:
-            try:
-                image = Image.open(io.BytesIO(base64.b64decode(img_str)))
-                st.image(image, use_container_width=True)
-                st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
-            except Exception as e:
-                st.markdown(f'<p style="color:#eeeeef;">❌ Error decoding image: {str(e)}</p>', unsafe_allow_html=True)
-                return None, 0
+       # If an image is returned, display it
+    if img_str:
+        image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+        st.image(image, use_container_width=True)
+
+        st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
 
         return pothole_detected, num_potholes
-
     else:
         st.markdown('<p style="color:#eeeeef;">❌ Failed to get prediction from API.</p>', unsafe_allow_html=True)
-
+        return None
 
 
 # Page selector
