@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-SERVICE_URL= 'https://image-thabat-652749443637.europe-west1.run.app/predict'
+API_URL= 'http://127.0.0.1:8000/predict'
 
 # Load and Save functions
 def load_user_db():
@@ -156,7 +156,7 @@ def send_image_to_api(image_path):
     try:
         with open(image_path, "rb") as image_file:
             files = {"file": image_file}
-            response = requests.post(SERVICE_URL, files=files)
+            response = requests.post(API_URL, files=files)
 
         if response.status_code == 200:
             response_json = response.json()
@@ -175,12 +175,12 @@ def send_image_to_api(image_path):
 
         else:
             st.markdown(f'<p style="color:#eeeeef;">:x: API Error: {response.status_code}</p>', unsafe_allow_html=True)
-            return False,0
+            return None
 
     except requests.exceptions.RequestException as e:
         st.markdown('<p style="color:#eeeeef;">:x: Failed to connect to the API</p>', unsafe_allow_html=True)
         print("Connection Error:", e)
-        return False,0
+        return None
 
 
 # Page selector
