@@ -156,7 +156,7 @@ if "page" not in st.session_state:
 def send_image_to_api(image_path):
     with open(image_path, "rb") as image_file:
         files = {"file": image_file}
-        response = requests.post(API_URL, files=files)
+        response = requests.post(SERVICE_URL, files=files)
 
     if response.status_code == 200:
         response_json = response.json()
