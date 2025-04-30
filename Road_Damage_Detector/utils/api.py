@@ -32,7 +32,7 @@ class PotholeDetectionResponse(BaseModel):
     pothole_detected: bool
     image: str
 
-@app.post("/predict/", response_model=PotholeDetectionResponse)
+@app.post("/predict", response_model=PotholeDetectionResponse)
 async def predict(file: UploadFile = File(...)):
     # Read the image file
     img_bytes = await file.read()
