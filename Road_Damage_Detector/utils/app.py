@@ -165,7 +165,7 @@ def send_image_to_api(image_path):
 
     # If an image is returned, display it
     if img_str:
-        image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+        image = Image.open(io.BytesIO(base64.b64decode(response_json.get("image", None))))
         st.image(image, use_container_width=True)
 
         st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
