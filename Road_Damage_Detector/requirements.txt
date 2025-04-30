@@ -1,6 +1,6 @@
 streamlit
 ultralytics
-Pillow
+pillow
 opencv-python
 numpy
 pandas
@@ -9,3 +9,4 @@ uvicorn
 python-multipart
 pydantic
 requests
+python-dotenv

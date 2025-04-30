@@ -360,13 +360,13 @@ elif page == "Demo":
 
 
             with st.spinner("Sending image to server for analysis..."):
-                pothole_found, num_potholes = send_image_to_api(temp_img_path)
+                pothole_found = send_image_to_api(temp_img_path)
                 if pothole_found is not None:
                     if pothole_found:
-                        st.markdown('<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)              
+
                     else:
                         st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>', unsafe_allow_html=True)
-
                     # Save to history
                     st.session_state.history.setdefault(st.session_state.username, []).append({
                         "source": "Uploaded Image",
@@ -388,18 +388,24 @@ elif page == "Demo":
                         pothole_found, num_potholes = send_image_to_api(path)
                         if pothole_found is not None:
                             if pothole_found:
-                                st.markdown(f'<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected in Demo {idx+1}❗</div>', unsafe_allow_html=True)
+                                st.markdown(
+                                    f'<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected in Demo {idx+1}❗</div>',
+                                    unsafe_allow_html=True
+                                )
                             else:
-                                st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>', unsafe_allow_html=True)
+                                st.markdown(
+                                    f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>',
+                                    unsafe_allow_html=True
+                                )
 
+                        # Save to history
+                        st.session_state.history.setdefault(st.session_state.username, []).append({
+                            "source": f"Demo Image {idx+1}",
+                            "potholes": pothole_found,
+                            "image": path
+                        })
+                        save_history(st.session_state.history)
 
-                            # Save to history
-                            st.session_state.history.setdefault(st.session_state.username, []).append({
-                                "source": f"Demo Image {idx+1}",
-                                "potholes": pothole_found,
-                                "image": path
-                            })
-                            save_history(st.session_state.history)
 
 # History Page
 elif page == "History":
