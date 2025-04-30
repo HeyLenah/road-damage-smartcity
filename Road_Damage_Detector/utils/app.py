@@ -14,8 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL = "https://image-thabat-652749443637.europe-west1.run.app"
-  # Replace with your real API server!
+API_URL = "http://127.0.0.1:8000/predict"  # Replace with your real API server!
 
 # Load and Save functions
 def load_user_db():
@@ -164,7 +163,7 @@ def send_image_to_api(image_path):
         num_potholes = response_json.get("num_potholes", 0)
         img_str = response_json.get("image", None)
 
-       # If an image is returned, display it
+    # If an image is returned, display it
     if img_str:
         image = Image.open(io.BytesIO(base64.b64decode(img_str)))
         st.image(image, use_container_width=True)
@@ -355,9 +354,9 @@ elif page == "Demo":
                 pothole_found, num_potholes = send_image_to_api(temp_img_path)
                 if pothole_found is not None:
                     if pothole_found:
-                       st.markdown('<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)
                     else:
-                       st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>', unsafe_allow_html=True)
+                        st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>', unsafe_allow_html=True)
 
                     # Save to history
                     st.session_state.history.setdefault(st.session_state.username, []).append({
