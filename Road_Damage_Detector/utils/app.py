@@ -152,30 +152,50 @@ if "username" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
+# def send_image_to_api(image_path):
+#     with open(image_path, "rb") as image_file:
+#         files = {"file": image_file}
+#         response = requests.post(API_URL, files=files)
+
+#     if response.status_code == 200:
+#         response_json = response.json()
+#         pothole_detected = response_json.get("pothole_detected", False)
+#         num_potholes = response_json.get("num_potholes", 0)
+#         img_str = response_json.get("image", None)
+
+#        # If an image is returned, display it
+#     if img_str:
+#         image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+#         st.image(image, use_container_width=True)
+
+#         st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
+
+#         return pothole_detected, num_potholes
+#     else:
+#         st.markdown('<p style="color:#eeeeef;">❌ Failed to get prediction from API.</p>', unsafe_allow_html=True)
+#         return None
+
+
 def send_image_to_api(image_path):
-    with open(image_path, "rb") as image_file:
-        files = {"file": image_file}
-        response = requests.post(API_URL, files=files)
-
-    if response.status_code == 200:
-        response_json = response.json()
-        pothole_detected = response_json.get("pothole_detected", False)
-        num_potholes = response_json.get("num_potholes", 0)
-        img_str = response_json.get("image", None)
-
-       # If an image is returned, display it
-    if img_str:
-        image = Image.open(io.BytesIO(base64.b64decode(img_str)))
-        st.image(image, use_container_width=True)
-
-        st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
-
-        return pothole_detected, num_potholes
-    else:
-        st.markdown('<p style="color:#eeeeef;">❌ Failed to get prediction from API.</p>', unsafe_allow_html=True)
-        return None
-
-
+    try:
+        with open(image_path, "rb") as image_file:
+            files = {"file": image_file}
+            response = requests.post(API_URL, files=files)
+        if response.status_code == 200:
+            response_json = response.json()
+            pothole_detected = response_json.get("pothole_detected", False)
+            num_potholes = response_json.get("num_potholes", 0)
+            img_str = response_json.get("image", None)
+            if img_str:
+                image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+                st.image(image, caption="Processed Image with Potholes Detected", use_column_width=True)
+            return pothole_detected, num_potholes
+        else:
+            st.error(":x: Failed to get prediction from API.")
+            return False, 0
+    except Exception as e:
+        st.error(f":warning: An error occurred: {e}")
+        return False, 0
 # Page selector
 page = st.sidebar.selectbox("Select a Page", ["Home", "Demo", "History"], index=["Home", "Demo", "History"].index(st.session_state.page))
 
@@ -371,8 +391,7 @@ elif page == "Demo":
 
         st.subheader("Or analyze a demo image:")
 
-        script_dir = os.path.dirname(__file__)
-        demo_images_dir = os.path.join(script_dir, "..", "demo imgs")
+        demo_images_dir = "demo imgs"
         demo_image_paths = sorted(glob(os.path.join(demo_images_dir, "*.jpg")))
 
         cols = st.columns(5)
