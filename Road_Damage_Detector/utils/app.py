@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL = "https://image-thabat-652749443637.europe-west1.run.app/predict"
+SERVICE_URL= 'https://image-thabat-652749443637.europe-west1.run.app'
   # Replace with your real API server!
 
 # Load and Save functions
