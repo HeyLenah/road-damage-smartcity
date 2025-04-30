@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-SERVICE_URL= 'https://image-thabat-652749443637.europe-west1.run.app/predict'
+API_URL = "https://image-thabat-652749443637.europe-west1.run.app"
   # Replace with your real API server!
 
 # Load and Save functions
@@ -154,35 +154,27 @@ if "page" not in st.session_state:
     st.session_state.page = "Home"
 
 def send_image_to_api(image_path):
-    try:
-        # Open the image and send it to the API
-        with open(image_path, "rb") as image_file:
-            files = {"file": image_file}
-            response = requests.post(SERVICE_URL, files=files)
+    with open(image_path, "rb") as image_file:
+        files = {"file": image_file}
+        response = requests.post(API_URL, files=files)
 
-        if response.status_code == 200:
-            response_json = response.json()
-            pothole_detected = response_json.get("pothole_detected", False)
-            num_potholes = response_json.get("num_potholes", 0)
-            img_str = response_json.get("image", "")  # Default to an empty string
+    if response.status_code == 200:
+        response_json = response.json()
+        pothole_detected = response_json.get("pothole_detected", False)
+        num_potholes = response_json.get("num_potholes", 0)
+        img_str = response_json.get("image", None)
 
-            # Ensure the image string is valid
-            if img_str:
-                image = Image.open(io.BytesIO(base64.b64decode(img_str)))
-                st.image(image, use_container_width=True)
-                st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
-            else:
-                st.markdown('<p style="color:#eeeeef;">❌ No image received from API.</p>', unsafe_allow_html=True)
+       # If an image is returned, display it
+    if img_str:
+        image = Image.open(io.BytesIO(base64.b64decode(img_str)))
+        st.image(image, use_container_width=True)
 
-            return pothole_detected, num_potholes
+        st.markdown('<p style="color:#eeeeef;">Processed Image with Potholes Detected</p>', unsafe_allow_html=True)
 
-        else:
-            st.markdown(f'<p style="color:#eeeeef;">❌ Failed to get prediction from API. Status code: {response.status_code}</p>', unsafe_allow_html=True)
-            return None, 0  # Return a default value when the API fails
-    except Exception as e:
-        st.markdown(f'<p style="color:#eeeeef;">❌ An error occurred: {str(e)}</p>', unsafe_allow_html=True)
-        return None, 0  # Return a default value in case of an error
-
+        return pothole_detected, num_potholes
+    else:
+        st.markdown('<p style="color:#eeeeef;">❌ Failed to get prediction from API.</p>', unsafe_allow_html=True)
+        return None
 
 
 # Page selector
@@ -202,10 +194,7 @@ if page == "Home":
     col1, col2, col3 = st.columns([5, 1, 1])  # col1 is now the widest
 
     with col1:
-        # Build path to logo.jpg relative to this script's location
-        logo_path = os.path.join(os.path.dirname(__file__), "logo.jpg")
-        logo = Image.open(logo_path)
-        st.image(logo, width=1000)
+        st.image("logo.jpg", width=1000)
         st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("""
 <div dir="rtl" style="text-align: right; font-size: 18px; line-height: 1.6;">
