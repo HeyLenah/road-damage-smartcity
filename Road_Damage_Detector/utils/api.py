@@ -8,7 +8,8 @@ from ultralytics import YOLO
 
 app = FastAPI()
 
-model = YOLO("best.pt")  # Adjust this path to where your YOLO model is saved
+model_path = os.path.join(script_dir, "..", "models", "best.pt")
+model = YOLO(model_path)  # Adjust this path to where your YOLO model is saved
 
 
 
