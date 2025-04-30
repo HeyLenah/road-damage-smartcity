@@ -158,7 +158,7 @@ def send_image_to_api(image_path):
             files = {"file": image_file}
             response = requests.post(API_URL, files=files)
 
-        if response.status_code == 404:
+        if response.status_code == 200:
             response_json = response.json()
             pothole_detected = response_json.get("pothole_detected", False)
             num_potholes = response_json.get("num_potholes", 0)

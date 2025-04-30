@@ -30,24 +30,23 @@ def detect_potholes(image: Image) -> (bool, np.ndarray):
 # Response model
 class PotholeDetectionResponse(BaseModel):
     pothole_detected: bool
+    num_potholes: int
     image: str
 
 @app.post("/predict", response_model=PotholeDetectionResponse)
 async def predict(file: UploadFile = File(...)):
-    # Read the image file
     img_bytes = await file.read()
     image = Image.open(io.BytesIO(img_bytes))
 
-    # Run pothole detection and get the result image
     pothole_detected, img_with_boxes = detect_potholes(image)
+    num_potholes = len(model.predict(np.array(image))[0].boxes)
 
-    # Convert the image with bounding boxes to base64 string to return to the frontend
     buffered = io.BytesIO()
     img_with_boxes.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode()
 
-    # Return the response with the base64 image and detection result
     return PotholeDetectionResponse(
         pothole_detected=pothole_detected,
+        num_potholes=num_potholes,
         image=img_str
     )
