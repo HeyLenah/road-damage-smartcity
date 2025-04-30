@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-SERVICE_URL= 'https://image-thabat-652749443637.europe-west1.run.app'
+SERVICE_URL= 'https://image-thabat-652749443637.europe-west1.run.app/predict'
 
 # Load and Save functions
 def load_user_db():
