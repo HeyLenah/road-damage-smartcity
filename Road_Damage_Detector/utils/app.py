@@ -16,7 +16,7 @@ HISTORY_FILE = "history.pkl"
 # API URL
 SERVICE_URL = "https://image-thabat-652749443637.europe-west1.run.app"
   # Replace with your real API server!
-
+# API_URL = "http://127.0.0.1:8000/predict"
 # Load and Save functions
 def load_user_db():
     if os.path.exists(USER_DB_FILE):
@@ -371,7 +371,11 @@ elif page == "Demo":
 
         st.subheader("Or analyze a demo image:")
 
-        demo_images_dir = "demo imgs"
+        script_dir = os.path.dirname(os.path.abspath(__file__))  # Current working directory
+        utils_dir = os.path.dirname(script_dir)  # Parent directory (where utils is located)
+        demo_images_dir = os.path.join(utils_dir, "demo imgs")  # Absolute path to demo imgs directory
+
+# Get all .jpg image paths in demo imgs directory
         demo_image_paths = sorted(glob(os.path.join(demo_images_dir, "*.jpg")))
 
         cols = st.columns(5)
