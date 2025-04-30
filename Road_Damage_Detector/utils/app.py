@@ -14,7 +14,8 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL = "http://127.0.0.1:8000/predict"  # Replace with your real API server!
+SERVICE_URL = "https://image-thabat-652749443637.europe-west1.run.app"
+  # Replace with your real API server!
 
 # Load and Save functions
 def load_user_db():
