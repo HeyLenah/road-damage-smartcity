@@ -1,0 +1,7 @@
+ultralytics
+matplotlib
+pandas
+opencv-python-headless
+seaborn
+Pillow
+roboflow

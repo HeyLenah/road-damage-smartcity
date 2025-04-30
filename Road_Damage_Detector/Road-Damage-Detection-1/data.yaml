@@ -1,0 +1,12 @@
+names:
+- pothole
+nc: 1
+roboflow:
+  license: CC BY 4.0
+  project: road-damage-detection-ndadw
+  url: https://universe.roboflow.com/rdetect/road-damage-detection-ndadw/dataset/1
+  version: 1
+  workspace: rdetect
+test: ../test/images
+train: ../train/images
+val: ../valid/images
