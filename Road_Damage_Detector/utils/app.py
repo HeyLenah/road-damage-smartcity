@@ -15,7 +15,7 @@ HISTORY_FILE = "history.pkl"
 
 # API URL
 # API_URL= 'http://127.0.0.1:8000/predict'
-SERVICE_URL= 'https://thabat-652749443637.europe-west1.run.app'
+SERVICE_URL= 'https://thabat-652749443637.europe-west1.run.app/predict'
 
 # Load and Save functions
 def load_user_db():
