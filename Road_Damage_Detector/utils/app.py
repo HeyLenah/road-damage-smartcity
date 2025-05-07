@@ -379,7 +379,7 @@ elif page == "Demo":
 
         st.subheader("Or analyze a demo image:")
 
-        demo_images_dir = "demo imgs"
+        demo_images_dir = "demo_imgs"
         demo_image_paths = sorted(glob(os.path.join(demo_images_dir, "*.jpg")))
 
         cols = st.columns(5)

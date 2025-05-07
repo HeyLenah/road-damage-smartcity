@@ -12,7 +12,7 @@ model = YOLO("best.pt")  # Adjust this path to where your YOLO model is saved
 
 
 
-def detect_potholes(image: Image) -> (bool, np.ndarray):
+def detect_potholes(image: Image) -> tuple[bool, np.ndarray]:
     img_np = np.array(image)
 
     results = model.predict(img_np)
@@ -31,6 +31,10 @@ def detect_potholes(image: Image) -> (bool, np.ndarray):
 class PotholeDetectionResponse(BaseModel):
     pothole_detected: bool
     image: str
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the homepage"}
 
 @app.post("/predict", response_model=PotholeDetectionResponse)
 async def predict(file: UploadFile = File(...)):
