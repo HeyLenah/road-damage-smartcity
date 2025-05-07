@@ -8,41 +8,46 @@ from ultralytics import YOLO
 
 app = FastAPI()
 
-# Load the YOLO model
-model = YOLO("best.pt")  # Ensure 'best.pt' is included in your deployment package
+model = YOLO("best.pt")  # Adjust this path to where your YOLO model is saved
 
-# Define response model
+
+
+def detect_potholes(image: Image) -> (bool, np.ndarray):
+    img_np = np.array(image)
+
+    results = model.predict(img_np)
+
+    img_with_boxes = results[0].plot()  # This will automatically draw the boxes on the image
+
+    # Convert the image with boxes to a PIL Image
+    img_with_boxes_pil = Image.fromarray(img_with_boxes)
+
+    # Detect if potholes are present based on the number of detected objects
+    pothole_detected = len(results[0].boxes) > 0  # True if potholes are detected
+
+    return pothole_detected, img_with_boxes_pil
+
+# Response model
 class PotholeDetectionResponse(BaseModel):
     pothole_detected: bool
-    num_potholes: int
     image: str
 
 @app.post("/predict", response_model=PotholeDetectionResponse)
 async def predict(file: UploadFile = File(...)):
-    # Read uploaded image file
+    # Read the image file
     img_bytes = await file.read()
-    image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+    image = Image.open(io.BytesIO(img_bytes))
 
-    # Run YOLO prediction
-    img_np = np.array(image)
-    results = model.predict(img_np)
+    # Run pothole detection and get the result image
+    pothole_detected, img_with_boxes = detect_potholes(image)
 
-    # Count detections
-    num_potholes = len(results[0].boxes)
-    pothole_detected = num_potholes > 0
-
-    # Draw detection boxes
-    img_with_boxes = results[0].plot()  # numpy array
-    img_with_boxes_pil = Image.fromarray(img_with_boxes)
-
-    # Convert to base64
+    # Convert the image with bounding boxes to base64 string to return to the frontend
     buffered = io.BytesIO()
-    img_with_boxes_pil.save(buffered, format="JPEG")
+    img_with_boxes.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode()
 
-    # Return response
+    # Return the response with the base64 image and detection result
     return PotholeDetectionResponse(
         pothole_detected=pothole_detected,
-        num_potholes=num_potholes,
         image=img_str
     )

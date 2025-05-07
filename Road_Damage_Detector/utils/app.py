@@ -14,7 +14,7 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL= 'https://image-thabat-652749443637.europe-west1.run.app/predict'
+API_URL= 'http://127.0.0.1:8000/predict'
 
 # Load and Save functions
 def load_user_db():
@@ -360,13 +360,15 @@ elif page == "Demo":
 
 
             with st.spinner("Sending image to server for analysis..."):
-                pothole_found = send_image_to_api(temp_img_path)
-                if pothole_found is not None:
-                    if pothole_found:
-                        st.markdown(f'<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)
+                pothole_found, _ = send_image_to_api(temp_img_path)  # Unpack the tuple
 
-                    else:
-                        st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected in Demo {idx+1} </div>', unsafe_allow_html=True)
+                if pothole_found is True:
+                    st.markdown(f'<div style="background-color: #d3d3d3; color: red; padding: 10px; border-radius: 5px;">⚠️ Warning: Pothole Detected ❗</div>', unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<div style="background-color: #d3d3d3; color: green; padding: 10px; border-radius: 5px;">✅ No potholes detected </div>', unsafe_allow_html=True)
+
+
+
                     # Save to history
                     st.session_state.history.setdefault(st.session_state.username, []).append({
                         "source": "Uploaded Image",

@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y libgl1
 
 COPY utils/api.py api.py
 COPY utils/app.py app.py
-COPY best.pt best.pt
+COPY utils/best.pt best.pt
+COPY utils/demo_imgs demo_imgs
 
 CMD uvicorn api:app --host 0.0.0.0 --port $PORT
 
