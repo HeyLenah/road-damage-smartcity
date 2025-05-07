@@ -14,7 +14,8 @@ USER_DB_FILE = "users.json"
 HISTORY_FILE = "history.pkl"
 
 # API URL
-API_URL = os.getenv("SERVICE_URL", "http://127.0.0.1:8000/predict")
+API_URL= 'http://127.0.0.1:8000/predict'
+
 # Load and Save functions
 def load_user_db():
     if os.path.exists(USER_DB_FILE):
