@@ -13,7 +13,8 @@ COPY utils/app.py app.py
 COPY utils/best.pt best.pt
 COPY utils/demo_imgs demo_imgs
 
-CMD uvicorn api:app --host 0.0.0.0 --port $PORT
+EXPOSE 8080
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8080"]
 
 
 # # Use Python 3.10-slim as a base image
